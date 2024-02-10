@@ -9,16 +9,18 @@ app.use(express.json());
 /////////////////////////////////////////////////
 // Routes
 app.use('/api/v1', authRouter);
-// To be removed
-app.route('/')
-    .get((req, res, next) => {
-        res.status(200).json({
-            status: '200',
-            message: 'Server is functional'
-        });
+
+
+// Handle non-existant routes
+app.all('*', (req, res, next) => {
+    res.status(404).json({
+        status: 'fail',
+        message: 'Incorrect path provided',
+        data: {
+            path: req.originalUrl
+        }
     })
-
-
+} )
 
 
 module.exports = app;
