@@ -31,9 +31,9 @@ exports.login = async (req, res, next) => {
   }
 
   // 2) check if user exists
-  const currentUser = await User.findOne({ email }).select("+password");
+  const currentUser = await UserRepository.findOne({ email }).select("+password");
   // 3) check password
-  if (!currentUser || !(await user.comparePasswords(password))) {
+  if (!currentUser || !(await currentUser.comparePasswords(password))) {
     // TODO: global error handling
     return res.status(401).json({
       status: "401",
@@ -43,7 +43,7 @@ exports.login = async (req, res, next) => {
 
   // 4) return token and save user in request object for future reference
   const token = generateToken(currentUser._id);
-  return res.status(200).json({
+    res.status(200).json({
     status: "200",
     message: "Successfully logged in.",
     token,
