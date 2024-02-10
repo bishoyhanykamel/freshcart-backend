@@ -1,4 +1,4 @@
-const router = require("express").router();
+const router = require("express").Router();
 const controller = require("./../controllers/auth.controller");
 
 router.route("/users/login").post(controller.login);
