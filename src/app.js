@@ -2,6 +2,12 @@ const express = require('express');
 
 const app = express();
 
+//////////////////////////////////////////////////
+// Middlewares
+app.use(express.json());
+
+/////////////////////////////////////////////////
+// Routes
 // To be removed
 app.route('/')
     .get((req, res, next) => {
@@ -11,7 +17,7 @@ app.route('/')
         });
     })
 
-app.use(express.json());
+
 
 
 module.exports = app;
