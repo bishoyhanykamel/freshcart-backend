@@ -1,4 +1,5 @@
 const express = require("express");
+const AppError = require('./utils/appError');
 const authRouter = require("./routes/auth.route");
 const app = express();
 
@@ -12,10 +13,7 @@ app.use("/api/v1", authRouter);
 
 // Handle non-existant routes
 app.all("*", (req, res, next) => {
-  const err = new Error("Not found");
-  err.status = "fail";
-  err.statusCode = 404;
-  next(err);
+  next(new AppError('Path not found.', 404));
 });
 
 app.use((err, req, res, next) => {

@@ -4,17 +4,17 @@ const UserSchema = mongoose.Schema({
   name: {
     type: String,
     trim: true,
-    required: [true, "User must have a name"],
+    required: [true, "User must have a name."],
   },
   password: {
     type: String,
-    required: [true, "User must have a password"],
+    required: [true, "User must have a password."],
   },
   email: {
     type: String,
     trim: true,
-    unqiue: true,
-    required: [true, "User must have an email"],
+    unqiue: [true, 'User already exists.'],
+    required: [true, "User must have an email."],
   },
   passwordChangeAt: Date,
   picture: {
@@ -22,6 +22,8 @@ const UserSchema = mongoose.Schema({
     trim: true,
   },
 });
+
+UserSchema.index({ username: 1, email: 1 }, { unique: true });
 
 UserSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
