@@ -7,6 +7,7 @@ exports.signup = async (req, res, next) => {
     name,
     email,
     password,
+    phone,
   });
 
   res.status(200).json({
@@ -48,6 +49,7 @@ exports.login = async (req, res, next) => {
     message: "Successfully logged in.",
     token,
   });
+  req.user = currentUser;
 };
 
 
