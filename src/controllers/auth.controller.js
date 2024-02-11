@@ -1,6 +1,7 @@
 const UserRepository = require("./../models/user.model");
 const jwt = require('jsonwebtoken');
 const catchAsync = require('./../utils/catchAsync');
+const AppError = require('./../utils/appError');
 const statusCodes = require('http-status-codes').StatusCodes;
 
 exports.signup = catchAsync(async (req, res, next) => {
@@ -13,7 +14,7 @@ exports.signup = catchAsync(async (req, res, next) => {
   });
 
   res.status(200).json({
-    status: "200",
+    status: "success",
     message: "Account created successfully, please log in.",
     data: {
       name: newUser.name,
@@ -26,28 +27,20 @@ exports.login = async (req, res, next) => {
   // 1) Check body
   const { email, password } = req.body;
   if (!email || !password) {
-    // TODO: global error handling
-    return res.status(400).json({
-      status: "400",
-      message: "Missing login credentials.",
-    });
+    return next(new AppError('Missing login credentials.', statusCodes.BAD_REQUEST));
   }
 
   // 2) check if user exists
   const currentUser = await UserRepository.findOne({ email }).select("+password");
   // 3) check password
   if (!currentUser || !(await currentUser.comparePasswords(password))) {
-    // TODO: global error handling
-    return res.status(401).json({
-      status: "401",
-      message: "Invalid login credentials.",
-    });
+    return next(new AppError('Invalid login credentials.', statusCodes.BAD_REQUEST));
   }
 
   // 4) return token and save user in request object for future reference
   const token = generateToken(currentUser._id);
-    res.status(200).json({
-    status: "200",
+    res.status(statusCodes.OK).json({
+    status: "success",
     message: "Successfully logged in.",
     token,
   });
