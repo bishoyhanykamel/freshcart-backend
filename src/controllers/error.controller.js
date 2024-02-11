@@ -1,3 +1,6 @@
+const AppError = require("./../utils/appError");
+const StatusCodes = require("http-status-codes").StatusCodes;
+
 const handleError = (err, req, res, next) => {
   err.statusCode = err.statusCode || 500;
   err.status = err.status || "Server failure.";
@@ -5,7 +8,14 @@ const handleError = (err, req, res, next) => {
   if (process.env.NODE_ENV === "dev") {
     sendErrorDev(err, res);
   } else if (process.env.NODE_ENV === "production") {
-    sendErrorProduction(err, res);
+    // turn non-operational errors to operational errors (ex: Mongoose, or any other library)
+    let handledError = { ...err };
+    if (err.name === "CastError") handledError = handleCastErrorDB(err);
+    else if(err.name === 'MongoError') {
+      if (err.code === 11000)
+        handledError = handleDuplicateKeysError(err);
+    }
+    sendErrorProduction(handledError, res);
   }
 };
 
@@ -32,4 +42,13 @@ const sendErrorProduction = (err, res) => {
   }
 };
 
+const handleCastErrorDB = (err) => {
+  const message = `Invalid ${err.path}: ${err.value}.`;
+  return new AppError(message, StatusCodes.BAD_REQUEST);
+};
+
+const handleDuplicateKeysError = (err) => {
+  const message = `Item you are trying to add already exists: ${err.errmsg.match(/"(.*?)"/)[1]}`;
+  return new AppError(message, StatusCodes.BAD_REQUEST);
+}
 module.exports = handleError;
