@@ -21,6 +21,11 @@ const UserSchema = mongoose.Schema({
     type: String,
     trim: true,
   },
+  phone: {
+    type: String,
+    trim: true,
+    required: [true, 'User must a phone number']
+  }
 });
 
 UserSchema.index({ username: 1, email: 1 }, { unique: true });
