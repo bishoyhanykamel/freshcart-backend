@@ -1,8 +1,10 @@
 const UserRepository = require("./../models/user.model");
 const jwt = require('jsonwebtoken');
+const catchAsync = require('./../utils/catchAsync');
+const statusCodes = require('http-status-codes').StatusCodes;
 
-exports.signup = async (req, res, next) => {
-  const { name, email, password } = req.body;
+exports.signup = catchAsync(async (req, res, next) => {
+  const { name, email, password, phone } = req.body;
   const newUser = await UserRepository.create({
     name,
     email,
@@ -18,7 +20,7 @@ exports.signup = async (req, res, next) => {
       email: newUser.email,
     },
   });
-};
+});
 
 exports.login = async (req, res, next) => {
   // 1) Check body
