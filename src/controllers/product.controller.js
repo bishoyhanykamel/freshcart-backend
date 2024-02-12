@@ -24,7 +24,7 @@ module.exports.getAllProducts = catchAsync(async (req, res, next) => {
   // Sorting
   if (req.query.sort) {
     const sortingOptions = req.query.sort.split(",");
-    productsQuery = productsQuery.sort(sortingQuery.join(" "));
+    productsQuery = productsQuery.sort(sortingOptions.join(" "));
   } else {
     productsQuery = productsQuery.sort('-ratingsAverage');
   }
