@@ -10,12 +10,22 @@ module.exports.getAllProducts = catchAsync(async (req, res, next) => {
 
   // Advanced filtering: GTE/GT/LTE/LT, map them to $gte for mongoDB
   let searchParams = JSON.stringify(searchQuery);
-  searchParams = searchParams.replace(/\b(gt|gte|lt|lte)\b/g, (param) => `$${param}`);
+  searchParams = searchParams.replace(
+    /\b(gt|gte|lt|lte)\b/g,
+    (param) => `$${param}`
+  );
   searchParams = JSON.parse(searchParams);
 
+  // Setting query with filters
   let productsQuery = searchParams
     ? ProductRepository.find(searchParams)
     : ProductRepository.find();
+
+  // Sorting
+  if (req.query.sort) {
+    const sortingOptions = req.query.sort.split(",");
+    productsQuery = productsQuery.sort(sortingQuery.join(" "));
+  }
 
   const products = await productsQuery;
   res.status(statusCodes.OK).json({
