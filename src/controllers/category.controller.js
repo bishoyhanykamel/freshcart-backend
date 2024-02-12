@@ -13,9 +13,9 @@ module.exports.getAllCategories = catchAsync(async (req, res, next) => {
   let categoriesQuery = clientQuery
     ? CategoryRepository.find(clientQuery)
     : CategoryRepository.find();
-
+    
   // Pagination, limiting results
-  
+  // TODO
   // Execute query
   const categories = await categoriesQuery;
 
