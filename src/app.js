@@ -12,7 +12,7 @@ app.use(express.json());
 /////////////////////////////////////////////////
 // Routes
 app.use("/api/v1/users", authRouter);
-app.use("api/v1/categories", categoriesRouter);
+app.use("/api/v1/categories", categoriesRouter);
 
 // Handle non-existant routes
 app.all("*", (req, res, next) => {

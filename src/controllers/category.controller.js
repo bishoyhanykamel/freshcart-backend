@@ -9,7 +9,7 @@ module.exports.getAllCategories = catchAsync(async (req, res, next) => {
 
   excludedParams.forEach((excluded) => delete clientQuery[excluded]);
 
-  const categories = !clientQuery
+  const categories = clientQuery
     ? await CategoryRepository.find(clientQuery)
     : await CategoryRepository.find();
 
