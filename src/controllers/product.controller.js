@@ -10,7 +10,7 @@ module.exports.getAllProducts = catchAsync(async (req, res, next) => {
 
   // Advanced filtering: GTE/GT/LTE/LT, map them to $gte for mongoDB
   let searchParams = JSON.stringify(searchQuery);
-  searchParams.replace(/(gt|gte|lt|lte)/g, (param) => `$${param}`);
+  searchParams.replace(/\b(gt|gte|lt|lte)\b/g, (param) => `$${param}`);
   searchParams = JSON.parse(searchParams);
 
   let productsQuery = searchParams
