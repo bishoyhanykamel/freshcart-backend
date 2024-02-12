@@ -1,7 +1,7 @@
 const CategoryRepository = require("./../models/category.model");
 const statusCodes = require("http-status-codes").StatusCodes;
-const catchAsync = require('./../utils/catchAsync');
-const AppError = require('./../utils/appError');
+const catchAsync = require("./../utils/catchAsync");
+const AppError = require("./../utils/appError");
 
 module.exports.getAllCategories = catchAsync(async (req, res, next) => {
   const clientQuery = { ...req.query };
@@ -9,10 +9,17 @@ module.exports.getAllCategories = catchAsync(async (req, res, next) => {
 
   excludedParams.forEach((excluded) => delete clientQuery[excluded]);
 
-  const categories = clientQuery
-    ? await CategoryRepository.find(clientQuery)
-    : await CategoryRepository.find();
+  // Search and filtration
+  let categoriesQuery = clientQuery
+    ? CategoryRepository.find(clientQuery)
+    : CategoryRepository.find();
 
+  // Pagination, limiting results
+  
+  // Execute query
+  const categories = await categoriesQuery;
+
+  // Response message
   res.status(statusCodes.OK).json({
     status: "success",
     message: "Retrieved all categories.",
