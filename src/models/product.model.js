@@ -30,7 +30,12 @@ const schema = mongoose.Schema({
     createdAt: {
         type: Date,
     },
-    updatedAt: Date
+    updatedAt: Date,
+    sold: Number,
+    price: {
+        type: Number,
+        required: [true, 'Product must have price']
+    }
 });
 
 const ProductModel = mongoose.model('Products', schema);
