@@ -23,10 +23,20 @@ module.exports.getAllProducts = catchAsync(async (req, res, next) => {
 
   // Sorting
   if (req.query.sort) {
-    const sortingOptions = req.query.sort.split(",");
-    productsQuery = productsQuery.sort(sortingOptions.join(" "));
+    const sorting = req.query.sort.split(",");
+    productsQuery = productsQuery.sort(sorting.join(" "));
   } else {
-    productsQuery = productsQuery.sort('-ratingsAverage');
+    // Default sorting by descending value of product rating
+    productsQuery = productsQuery.sort("-ratingsAverage");
+  }
+
+  // Select certain fields from query
+  if (req.query.fields) {
+    const fields = req.query.fields.split(",").join(" ");
+    productsQuery = productsQuery.select(fields);
+  } else {
+    // Remove default __v field thats created by MongoDB
+    productsQuery = productsQuery.select('-__v')
   }
 
   const products = await productsQuery;
